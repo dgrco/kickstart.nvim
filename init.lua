@@ -146,6 +146,9 @@ do
   vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
   vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+  vim.keymap.set('v', '<', '<gv', { desc = 'Indent left and reselect' })
+  vim.keymap.set('v', '>', '>gv', { desc = 'Indent right and reselect' })
+
   -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
   -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
   -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
@@ -286,6 +289,18 @@ do
     -- Delay between pressing a key and opening which-key (milliseconds)
     delay = 0,
     icons = { mappings = vim.g.have_nerd_font },
+
+    win = {
+      padding = { 1, 4 },
+      border = 'rounded',
+      col = vim.o.columns,  -- anchor to right
+    },
+
+    layout = {
+      width = { min = 20, max = 50 },
+      spacing = 6,
+    },
+
     -- Document existing key chains
     spec = {
       { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
@@ -867,7 +882,7 @@ do
   -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- require 'custom.plugins'
+  require 'custom.plugins'
 end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
