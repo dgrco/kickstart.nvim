@@ -106,7 +106,7 @@ do
     underline = { severity = { min = vim.diagnostic.severity.WARN } },
 
     -- Can switch between these as you prefer
-    virtual_text = true, -- Text shows up at the end of the line
+    virtual_text = false, -- Text shows up at the end of the line
     virtual_lines = false, -- Text shows up underneath the line, with virtual lines
 
     -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
@@ -751,10 +751,8 @@ do
       -- Optionally, set `auto_show = true` to show the documentation after a delay.
       documentation = { auto_show = true, auto_show_delay_ms = 50 },
       menu = {
-        min_width = 15,
         max_height = 10,
         draw = {
-          padding = 1,
           columns = {
             { 'label', 'label_description', gap=1 },
             { 'kind' },
