@@ -1,89 +1,3 @@
---[[
-
-=====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-=====================================================================
-========                                    .-----.          ========
-========         .----------------------.   | === |          ========
-========         |.-""""""""""""""""""-.|   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
-========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
-========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
-========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
-========                                                     ========
-=====================================================================
-=====================================================================
-
-What is Kickstart?
-
-  Kickstart.nvim is *not* a distribution.
-
-  Kickstart.nvim is a starting point for your own configuration.
-    The goal is that you can read every line of code, top-to-bottom, understand
-    what your configuration is doing, and modify it to suit your needs.
-
-    Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
-    or immediately breaking it into modular pieces. It's up to you!
-
-    If you don't know anything about Lua, I recommend taking some time to read through
-    a guide. One possible example which will only take 10-15 minutes:
-      - https://learnxinyminutes.com/docs/lua/
-
-    After understanding a bit more about Lua, you can use `:help lua-guide` as a
-    reference for how Neovim integrates Lua.
-    - :help lua-guide
-    - (or HTML version): https://neovim.io/doc/user/lua-guide.html
-
-Kickstart Guide:
-
-  TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
-
-    If you don't know what this means, type the following:
-      - <escape key>
-      - :
-      - Tutor
-      - <enter key>
-
-    (If you already know the Neovim basics, you can skip this step.)
-
-  Once you've completed that, you can continue working through **AND READING** the rest
-  of the kickstart init.lua.
-
-  Next, run AND READ `:help`.
-    This will open up a help window with some basic information
-    about reading, navigating and searching the builtin help documentation.
-
-    This should be the first place you go to look when you're stuck or confused
-    with something. It's one of my favorite Neovim features.
-
-    MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
-    which is very useful when you're not exactly sure of what you're looking for.
-
-  I have left several `:help X` comments throughout the init.lua
-    These are hints about where to find more information about the relevant settings,
-    plugins or Neovim features used in Kickstart.
-
-   NOTE: Look for lines like this
-
-    Throughout the file. These are for you, the reader, to help you understand what is happening.
-    Feel free to delete them once you know what you're doing, but they should serve as a guide
-    for when you are first encountering a few different constructs in your Neovim config.
-
-If you experience any errors while trying to install kickstart, run `:checkhealth` for more info.
-
-I hope you enjoy your Neovim journey,
-- TJ
-
-P.S. You can delete this when you're done too. It's your config now! :)
---]]
-
 -- ============================================================
 -- SECTION 1: FOUNDATION
 -- Core Neovim settings, leaders, options, basic keymaps, basic autocmds
@@ -98,8 +12,12 @@ do
   vim.g.mapleader = ' '
   vim.g.maplocalleader = ' '
 
+  vim.o.guicursor = ""
+
+  vim.o.winborder = "rounded"
+
   -- Set to true if you have a Nerd Font installed and selected in the terminal
-  vim.g.have_nerd_font = false
+  vim.g.have_nerd_font = true
 
   -- [[ Setting options ]]
   --  See `:help vim.o`
@@ -155,14 +73,14 @@ do
   --  It is very similar to `vim.o` but offers an interface for conveniently interacting with tables.
   --   See `:help lua-options`
   --   and `:help lua-guide-options`
-  vim.o.list = true
+  vim.o.list = false
   vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
   -- Preview substitutions live, as you type!
   vim.o.inccommand = 'split'
 
   -- Show which line your cursor is on
-  vim.o.cursorline = true
+  vim.o.cursorline = false
 
   -- Minimal number of screen lines to keep above and below the cursor.
   vim.o.scrolloff = 10
@@ -383,18 +301,12 @@ do
   -- change the command under that to load whatever the name of that colorscheme is.
   --
   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-  vim.pack.add { gh 'folke/tokyonight.nvim' }
+  vim.pack.add { gh 'dgrco/dusk.nvim' }
   ---@diagnostic disable-next-line: missing-fields
-  require('tokyonight').setup {
-    styles = {
-      comments = { italic = false }, -- Disable italics in comments
-    },
-  }
+  require('dusk').setup {}
 
   -- Load the colorscheme here.
-  -- Like many other themes, this one has different styles, and you could load
-  -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  vim.cmd.colorscheme 'tokyonight-night'
+  vim.cmd.colorscheme 'dusk-break'
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
@@ -494,6 +406,14 @@ do
     --   },
     -- },
     -- pickers = {}
+    defaults = {
+      sorting_strategy = 'ascending',
+      layout_config = {
+        prompt_position = 'top',
+      },
+      prompt_prefix = '  ',
+      selection_caret = '  ',
+    },
     extensions = {
       ['ui-select'] = { require('telescope.themes').get_dropdown() },
     },
@@ -504,18 +424,24 @@ do
   pcall(require('telescope').load_extension, 'ui-select')
 
   -- See `:help telescope.builtin`
-  local builtin = require 'telescope.builtin'
-  vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-  vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-  vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-  vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-  vim.keymap.set({ 'n', 'v' }, '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-  vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-  vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-  vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-  vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-  vim.keymap.set('n', '<leader>sc', builtin.commands, { desc = '[S]earch [C]ommands' })
-  vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+  local builtin = require('telescope.builtin')
+
+  -- Most used — direct single key
+  vim.keymap.set('n', '<leader>f', builtin.find_files,  { desc = 'Find files' })
+  vim.keymap.set('n', '<leader>g', builtin.live_grep,   { desc = 'Live grep' })
+  vim.keymap.set('n', '<leader>b', builtin.buffers,     { desc = 'Buffers' })
+  vim.keymap.set('n', '<leader>r', builtin.oldfiles,    { desc = 'Recent files' })
+
+  -- Search namespace <leader>s
+  vim.keymap.set({ 'n', 'v' }, '<leader>sw', builtin.grep_string,  { desc = '[S]earch [W]ord' })
+  vim.keymap.set('n', '<leader>sd', builtin.diagnostics,           { desc = '[S]earch [D]iagnostics' })
+  vim.keymap.set('n', '<leader>sr', builtin.resume,                { desc = '[S]earch [R]esume' })
+  vim.keymap.set('n', '<leader>sc', builtin.commands,              { desc = '[S]earch [C]ommands' })
+
+  -- Help/meta namespace <leader>? (rarely needed)
+  vim.keymap.set('n', '<leader>?h', builtin.help_tags, { desc = 'Help tags' })
+  vim.keymap.set('n', '<leader>?k', builtin.keymaps,   { desc = 'Keymaps' })
+  vim.keymap.set('n', '<leader>?t', builtin.builtin,   { desc = 'Telescope builtins' })
 
   -- Add Telescope-based LSP pickers when an LSP attaches to a buffer.
   -- If you later switch picker plugins, this is where to update these mappings.
@@ -610,8 +536,8 @@ do
   -- and elegantly composed help section, `:help lsp-vs-treesitter`
 
   -- Useful status updates for LSP.
-  vim.pack.add { gh 'j-hui/fidget.nvim' }
-  require('fidget').setup {}
+  -- vim.pack.add { gh 'j-hui/fidget.nvim' }
+  -- require('fidget').setup {}
 
   --  This function gets run when an LSP attaches to a particular buffer.
   --    That is to say, every time a new file is opened that is associated with
@@ -648,29 +574,6 @@ do
       --
       -- When you move your cursor, the highlights will be cleared (the second autocommand).
       local client = vim.lsp.get_client_by_id(event.data.client_id)
-      if client and client:supports_method('textDocument/documentHighlight', event.buf) then
-        local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
-        vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-          buffer = event.buf,
-          group = highlight_augroup,
-          callback = vim.lsp.buf.document_highlight,
-        })
-
-        vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-          buffer = event.buf,
-          group = highlight_augroup,
-          callback = vim.lsp.buf.clear_references,
-        })
-
-        vim.api.nvim_create_autocmd('LspDetach', {
-          group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
-          callback = function(event2)
-            vim.lsp.buf.clear_references()
-            vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
-          end,
-        })
-      end
-
       -- The following code creates a keymap to toggle inlay hints in your
       -- code, if the language server you are using supports them
       --
@@ -686,18 +589,18 @@ do
   --  See `:help lsp-config` for information about keys and how to configure
   ---@type table<string, vim.lsp.Config>
   local servers = {
-    -- clangd = {},
-    -- gopls = {},
-    -- pyright = {},
-    -- rust_analyzer = {},
+    clangd = {},
+    gopls = {},
+    pyright = {},
+    rust_analyzer = {},
     --
     -- Some languages (like typescript) have entire language plugins that can be useful:
     --    https://github.com/pmizio/typescript-tools.nvim
     --
     -- But for many setups, the LSP (`ts_ls`) will work just fine
-    -- ts_ls = {},
+    ts_ls = {},
 
-    stylua = {}, -- Used to format Lua code
+    -- stylua = {}, -- Used to format Lua code
 
     -- Special Lua Config, as recommended by neovim help docs
     lua_ls = {
@@ -799,7 +702,7 @@ do
     },
   }
 
-  vim.keymap.set({ 'n', 'v' }, '<leader>f', function() require('conform').format { async = true } end, { desc = '[F]ormat buffer' })
+  vim.keymap.set({ 'n', 'v' }, '<leader>lf', function() require('conform').format { async = true } end, { desc = '[F]ormat buffer' })
 end
 
 -- ============================================================
@@ -825,31 +728,16 @@ do
   vim.pack.add { { src = gh 'saghen/blink.cmp', version = vim.version.range '1.*' } }
   require('blink.cmp').setup {
     keymap = {
-      -- 'default' (recommended) for mappings similar to built-in completions
-      --   <c-y> to accept ([y]es) the completion.
-      --    This will auto-import if your LSP supports it.
-      --    This will expand snippets if the LSP sent a snippet.
-      -- 'super-tab' for tab to accept
-      -- 'enter' for enter to accept
-      -- 'none' for no mappings
-      --
-      -- For an understanding of why the 'default' preset is recommended,
-      -- you will need to read `:help ins-completion`
-      --
-      -- No, but seriously. Please read `:help ins-completion`, it is really good!
-      --
-      -- All presets have the following mappings:
-      -- <tab>/<s-tab>: move to right/left of your snippet expansion
-      -- <c-space>: Open menu or open docs if already open
-      -- <c-n>/<c-p> or <up>/<down>: Select next/previous item
-      -- <c-e>: Hide menu
-      -- <c-k>: Toggle signature help
-      --
-      -- See `:help blink-cmp-config-keymap` for defining your own keymap
-      preset = 'default',
-
-      -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
-      --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
+      preset = 'none',
+      ['<CR>']    = { 'accept', 'fallback' },
+      ['<Tab>']   = { 'select_next', 'fallback' },
+      ['<S-Tab>'] = { 'select_prev', 'fallback' },
+      ['<C-n>']   = { 'select_next', 'fallback' },
+      ['<C-p>']   = { 'select_prev', 'fallback' },
+      ['<C-j>']   = { 'select_next', 'fallback' },
+      ['<C-k>']   = { 'select_prev', 'fallback' },
+      ['<C-e>']   = { 'hide', 'fallback' },
+      ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
     },
 
     appearance = {
@@ -861,14 +749,25 @@ do
     completion = {
       -- By default, you may press `<c-space>` to show the documentation.
       -- Optionally, set `auto_show = true` to show the documentation after a delay.
-      documentation = { auto_show = false, auto_show_delay_ms = 500 },
+      documentation = { auto_show = true, auto_show_delay_ms = 0 },
+      menu = {
+        min_width = 15,
+        max_height = 10,
+        draw = {
+          padding = 1,
+          columns = {
+            { 'label', 'label_description', gap=1 },
+            { 'kind' },
+          },
+        },
+      },
     },
 
     sources = {
-      default = { 'lsp', 'path', 'snippets' },
+      default = { 'lsp', 'path' },
     },
 
-    snippets = { preset = 'luasnip' },
+    -- snippets = { preset = 'luasnip' },
 
     -- Blink.cmp includes an optional, recommended rust fuzzy matcher,
     -- which automatically downloads a prebuilt binary when enabled.
@@ -877,7 +776,7 @@ do
     -- the rust implementation via `'prefer_rust_with_warning'`
     --
     -- See `:help blink-cmp-config-fuzzy` for more information
-    fuzzy = { implementation = 'lua' },
+    fuzzy = { implementation = 'prefer_rust_with_warning' },
 
     -- Shows a signature help window while you type arguments for a function
     signature = { enabled = true },
@@ -963,7 +862,7 @@ do
   -- require 'kickstart.plugins.debug'
   -- require 'kickstart.plugins.indent_line'
   -- require 'kickstart.plugins.lint'
-  -- require 'kickstart.plugins.autopairs'
+  require 'kickstart.plugins.autopairs'
   -- require 'kickstart.plugins.neo-tree'
   -- require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
 
