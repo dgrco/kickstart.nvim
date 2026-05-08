@@ -730,7 +730,21 @@ do
   -- NOTE: You can also specify plugin using a version range for its git tag.
   --  See `:help vim.version.range()` for more info
   vim.pack.add { { src = gh 'L3MON4D3/LuaSnip', version = vim.version.range '2.*' } }
-  require('luasnip').setup {}
+  local ls = require("luasnip")
+  local s = ls.snippet
+  local i = ls.insert_node
+  local fmt = require("luasnip.extras.fmt").fmt
+  ls.setup {}
+  ls.add_snippets("all", {
+    s("section", fmt([[
+// ===========================
+// {}
+// ===========================
+]], {
+        i(1, "Section"),
+      })),
+  })
+  
 
   -- `friendly-snippets` contains a variety of premade snippets.
   --    See the README about individual language/framework/plugin snippets:
@@ -777,10 +791,10 @@ do
     },
 
     sources = {
-      default = { 'lsp', 'path' },
+      default = { 'lsp', 'path', 'snippets' },
     },
 
-    -- snippets = { preset = 'luasnip' },
+    snippets = { preset = 'luasnip' },
 
     -- Blink.cmp includes an optional, recommended rust fuzzy matcher,
     -- which automatically downloads a prebuilt binary when enabled.
